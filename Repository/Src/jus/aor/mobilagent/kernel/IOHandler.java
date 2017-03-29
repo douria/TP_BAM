@@ -1,6 +1,7 @@
 package jus.aor.mobilagent.kernel;
 
 import java.util.logging.Handler;
+
 import java.util.logging.LogRecord;
 
 import jus.util.Dialogue;
@@ -16,6 +17,7 @@ class IOHandler extends Handler {
 	 */
 	{
 		io = new Dialogue();
+		//ask the teacher as well !!!!!
 		io.setOut();
 	}
 	/* (non-Javadoc)
