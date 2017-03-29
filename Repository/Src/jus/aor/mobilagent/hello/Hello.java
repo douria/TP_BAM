@@ -2,12 +2,12 @@ package jus.aor.mobilagent.hello;
 
 import java.net.URI;
 
+
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-
-import com.sun.glass.ui.Window.Level;
+import java.util.logging.Level;
 
 import jus.aor.mobilagent.kernel._Action;
 import jus.aor.mobilagent.kernel.Agent;
@@ -35,7 +35,7 @@ public class Hello extends Agent{
 
 		@Override
 		public void execute() {
-			Starter.getLogger().log(Level.INFO, "Executing action Hello");
+			Starter.getLogger().log(Level.INFO, "Executing Hello action");
 		}
 
 		@Override
@@ -45,16 +45,17 @@ public class Hello extends Agent{
 	};
 	/* (non-Javadoc)
 	 * @see jus.aor.mobilagent.kernel.Agent#retour()
+	 * 
 	 */
 	@Override
-	protected _Action retour(){
+	public _Action retour(){
 		return new _Action() {
 
 			private static final long serialVersionUID = 8112403583439231794L;
 
 			@Override
 			public void execute() {
-				Starter.getLogger().log(Level.INFO, "Executing action Retour");
+				Starter.getLogger().log(Level.INFO, "Executing Retour action");
 			}
 
 			@Override
