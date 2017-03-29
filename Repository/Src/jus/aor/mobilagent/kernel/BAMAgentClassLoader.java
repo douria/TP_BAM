@@ -15,17 +15,20 @@ import java.util.jar.JarOutputStream;
 public class BAMAgentClassLoader extends ClassLoader {
 
 
-	/** Classes loaded from Jar files while executing integrateCode() */
-	private Map<String, byte[]> pClasses;
+	/** Classes loaded from Jar files while executing integrateCode()
+	 * 
+	 *  
+	 */
+	private Map<String, byte[]> Classes;
 
 	/**
-	 *
+	 *we create the classloader of an agent and also it map of classes 
 	 * @param aParent
 	 *            Parent classloader
 	 */
 	public BAMAgentClassLoader(ClassLoader aParent) {
 		super(aParent);
-		this.pClasses = new HashMap<String, byte[]>();
+		this.Classes = new HashMap<String, byte[]>();
 	}
 
 	/**
@@ -39,8 +42,8 @@ public class BAMAgentClassLoader extends ClassLoader {
 	
 	public BAMAgentClassLoader(String aJarFilePath, ClassLoader aParent) throws JarException, IOException {
 		this(aParent);
-		Jar wJar = new Jar(aJarFilePath);
-		this.integrateCode(wJar);
+		Jar aJar = new Jar(aJarFilePath);
+		this.integrateCode(aJar);
 	}
 
 	/**
@@ -65,21 +68,26 @@ public class BAMAgentClassLoader extends ClassLoader {
 	 * @throws IOException
 	 */
 	public Jar extractCode() throws JarException, IOException {
-		File wTmpJar = File.createTempFile("temporaryJar", ".jar");
+		//we create a new file that contains the jar 
+		File TmpJar = File.createTempFile("temporaryJar", ".jar");
 
 		// Try to create an OutputStream and JarOutputStream on the temporary
 		// Jar file just created
-		try (JarOutputStream wJarOutputStream = new JarOutputStream(new FileOutputStream(wTmpJar))) {
-			for (String wClassName : this.pClasses.keySet()) {
+		try (JarOutputStream JarOutputStream = new JarOutputStream(new FileOutputStream(TmpJar))) {
+			//we create all the classes that were in the initial jar  
+			for (String ClassName : this.Classes.keySet()) {
 				// Create an entry and write the byteCode of the class
-				// for every class in pClasses
-				wJarOutputStream.putNextEntry(new JarEntry(wClassName));
-				wJarOutputStream.write(this.pClasses.get(wClassName));
+				// for every class in Classes
+				//Begins writing a new JAR file entry and positions the stream 
+				//to the start of the entry data. This method will also close any previous entry.
+				JarOutputStream.putNextEntry(new JarEntry(ClassName));
+				//we write the whole content of the class in the jar stream 
+				JarOutputStream.write(this.Classes.get(ClassName));
 			}
-			wJarOutputStream.close();
+			JarOutputStream.close();
 		}
 		// Create the Jar object using the Jar file
-		return new Jar(wTmpJar.getPath());
+		return new Jar(TmpJar.getPath());
 	}
 
 	/**
@@ -89,7 +97,7 @@ public class BAMAgentClassLoader extends ClassLoader {
 	 *            Jar to integrate
 	 */
 	public void integrateCode(Jar aJar) {
-		
+		// ask the teacher!!!!
 	}
 
 }
