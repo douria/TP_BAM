@@ -34,7 +34,7 @@ public class BAMAgentClassLoader extends ClassLoader {
 	/**
 	 * This function creates a new jar that it finds in the agent's jarfilepath 
 	 * And creates a new classloader instanciation
-	 *  * @param aParent
+	 * @param aParent
 	 *            Parent classloader
 	 * @throws IOException
 	 * @throws JarException
@@ -91,13 +91,24 @@ public class BAMAgentClassLoader extends ClassLoader {
 	}
 
 	/**
-	 * Load all the classes in the Jar aJar and into the ClassLoader
+	 *When creating the MobileAgent we put on it hashmap all the methods and 
+	 *classes it needs to run it program
+	 *Then we create the jar that will make it translate from a server 
+	 *to another
 	 *
 	 * @param aJar
 	 *            Jar to integrate
 	 */
-	public void integrateCode(Jar aJar) {
-		// ask the teacher!!!!
+	public void integrateCode(Jar jar) {
+		for (Entry<String, byte[]> Entry : jar) {
+			String ClassName = this.className(Entry.getKey());
+			this.Classes.put(ClassName, Entry.getValue());
+
+			// Define and resolve the class to be able to use it
+			Class<?> Class = this.defineClass(ClassName, Entry.getValue(), 0, Entry.getValue().length);
+			super.resolveClass(Class);
+		}
+		
 	}
 
 }

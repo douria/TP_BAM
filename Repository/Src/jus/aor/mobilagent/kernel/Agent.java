@@ -1,5 +1,10 @@
 package jus.aor.mobilagent.kernel;
 
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.net.Socket;
+import java.net.URI;
 import java.util.logging.Level;
 
 public class Agent implements _Agent {
@@ -25,7 +30,7 @@ public class Agent implements _Agent {
 			//the first step which is also supposed to be the last one
 			if (this.way.hasNext()) {
 				// Send Agent to next AgentServer
-				this.move();
+				this.move(this.way.get().server);
 			} else {
 				// There is nothing left to do, Agent has finished
 				Starter.getLogger().log(Level.FINE, String.format("Agent %s has finished its route", this));
@@ -43,8 +48,37 @@ public class Agent implements _Agent {
 	 * 
 	 */
 
-   private void move() {
-		//ask the teacher !!!!!
+   private void move(URI destination) {
+	  
+	Starter.getLogger().log(Level.FINE,
+			    // we get the port and the local address of the next server 
+				String.format("Agent %s moving to %s:%d ", this, destination.getHost(), destination.getPort()));
+
+		try {
+			// Create the socket of the destination
+			Socket DestSocket = new Socket(destination.getHost(), destination.getPort());
+
+			// Creation of a Stream and a ObjectOutputStream to destination
+			OutputStream OutputStream = DestSocket.getOutputStream();
+			ObjectOutputStream ObjectOutputStream = new ObjectOutputStream(OutputStream);
+			ObjectOutputStream ObjectOutputStream2 = new ObjectOutputStream(OutputStream);
+
+			// Retrieve byte code to send
+			BAMAgentClassLoader wAgentClassLoader = (BAMAgentClassLoader) this.getClass().getClassLoader();
+			Jar wBaseCode = wAgentClassLoader.extractCode();
+
+			// Send Jar in BAMAgentClassLoader
+			ObjectOutputStream.writeObject(wBaseCode);
+			// Send Agent (this)
+			ObjectOutputStream2.writeObject(this);
+
+			// Close the socket
+			ObjectOutputStream2.close();
+			ObjectOutputStream.close();
+			DestSocket.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 		
 
