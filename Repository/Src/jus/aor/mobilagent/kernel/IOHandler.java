@@ -17,7 +17,6 @@ class IOHandler extends Handler {
 	 */
 	{
 		io = new Dialogue();
-		//ask the teacher as well !!!!!
 		io.setOut();
 	}
 	/* (non-Javadoc)
