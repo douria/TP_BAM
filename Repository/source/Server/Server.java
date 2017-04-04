@@ -1,6 +1,7 @@
 package Server;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
@@ -32,14 +33,14 @@ public class Server {
 
     	System.out.println("Mise en place du Security Manager ...");
     	if (System.getSecurityManager() == null) {
-    		System.setSecurityManager(new RMISecurityManager());
+    		//System.setSecurityManager(new RMISecurityManager());
     	}
 
-    	System.out.println("Serveur lanc�");
+    	System.out.println("Serveur lancé");
 	    
     	Chaine chaine = new Chaine();
     	DocumentBuilder build = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-    	Document document = build.parse(new File("Chaine.info"));
+    	Document document = build.parse(new File("../DataStore/Hotels1.xml"));
     	NodeList hotels = document.getElementsByTagName("hotel");
     	for(int i = 0; i<hotels.getLength(); i++) {
     		NamedNodeMap m = hotels.item(i).getAttributes();
