@@ -26,6 +26,25 @@ public class Agent implements _Agent {
 	 * @see java.lang.Runnable#run()
 	 */
 	public void run() {
+		/*
+		 System.out.println("Agent run");
+		if(route.hasNext()){
+			Etape e = route.next();
+			e.action.execute();
+			if(route.hasNext()){
+				this.move();
+			}
+			else{
+				this.move(route.retour.server);
+			}
+		}
+		else{
+			this.route.retour.action.execute();
+}
+		 */
+		
+		
+		
 		Starter.getLogger().log(Level.INFO, String.format("Agent %s starting execution", this));
 
 		// If there is something to do
@@ -41,10 +60,12 @@ public class Agent implements _Agent {
 				// Send Agent to next AgentServer
 				this.move();
 			} else {
+				this.move(this.way.retour.server);
 				// There is nothing left to do, Agent has finished
 				Starter.getLogger().log(Level.FINE, String.format("Agent %s has finished its route", this));
 			}
 		} else {
+			this.way.retour.action.execute();
 			// If this is reached, it means that the Agent had nothing to do. So
 			// just log it ended
 			Starter.getLogger().log(Level.INFO, String.format("Agent %s had already finished", this));
@@ -63,29 +84,54 @@ public class Agent implements _Agent {
 
 
 	protected void move(URI destination) {
+		
+		/*
+		 * 
+		 * 
+		 try {
+			Socket s = new Socket(adresseProchainServeur.getHost(), adresseProchainServeur.getPort());
+			ObjectOutputStream os = new ObjectOutputStream(s.getOutputStream());
+			//TODO peut être un os2 necessaire pour l'envoie
+			
+			BAMAgentClassLoader bacl = (BAMAgentClassLoader) this.getClass().getClassLoader();
+			Jar jar = bacl.extractCode();
+			os.writeObject(jar);
+			os.writeObject(this);
+			logger.log(Level.FINE, "Move de l'agent de "+this+" vers "+adresseProchainServeur);
+			os.close();
+			s.close();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		 */
 		Starter.getLogger().log(Level.FINE,
 				String.format("Agent %s moving to %s:%d ", this, destination.getHost(), destination.getPort()));
 
 		try {
-			Socket DestSocket = new Socket(destination.getHost(), destination.getPort());
+			Socket destsocket = new Socket(destination.getHost(), destination.getPort());
 
-			OutputStream OutputStream = DestSocket.getOutputStream();
-			ObjectOutputStream ObjectOutputStream = new ObjectOutputStream(OutputStream);
-			ObjectOutputStream ObjectOutputStream2 = new ObjectOutputStream(OutputStream);
+			OutputStream os = destsocket.getOutputStream();
+			ObjectOutputStream oos = new ObjectOutputStream(os);
+			//ObjectOutputStream ObjectOutputStream2 = new ObjectOutputStream(os);
 
 			BAMAgentClassLoader AgentClassLoader = (BAMAgentClassLoader) this.getClass().getClassLoader();
 			Jar BaseCode = AgentClassLoader.extractCode();
 
-			ObjectOutputStream.writeObject(BaseCode);
+			oos.writeObject(BaseCode);
 
-			ObjectOutputStream2.writeObject(this);
+			oos.writeObject(this);
 
-			ObjectOutputStream2.close();
-			ObjectOutputStream.close();
-			DestSocket.close();
+			//ObjectOutputStream2.close();
+			oos.close();
+			destsocket.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		
+		
 
 	}
 		
