@@ -3,6 +3,6 @@
 	<classpathentry kind="src" path="Repository/source"/>
 	<classpathentry kind="src" path="Repository/Src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="/home/deliseport/TP_BAM/jus.util.jar"/>
+	<classpathentry kind="lib" path="/home/zennouche/workspace/TP/jus.util.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
