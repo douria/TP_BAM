@@ -41,14 +41,14 @@ public class Server {
     	Chaine chaine = new Chaine();
     	DocumentBuilder build = DocumentBuilderFactory.newInstance().newDocumentBuilder();
     	Document document = build.parse(new File("Repository/DataStore/Hotels1.xml"));
-    	NodeList hotels = document.getElementsByTagName("hotel");
+    	NodeList hotels = document.getElementsByTagName("Hotel");
     	for(int i = 0; i<hotels.getLength(); i++) {
     		NamedNodeMap m = hotels.item(i).getAttributes();
     		chaine.add(m.getNamedItem("name").getNodeValue(), m.getNamedItem("localisation").getNodeValue());
     	}
     	_Chaine skeleton = (_Chaine) UnicastRemoteObject.exportObject((_Chaine)chaine, 1099);
 		Naming.rebind("chaine", skeleton);
-	    System.out.println("Hotel in Paris loaded: "+chaine.get("Paris").size());
+	    //System.out.println("Hotel in Paris loaded: "+chaine.get("Paris").size());
 	    while(true);
 	}
 
