@@ -3,11 +3,8 @@ package jus.aor.mobilagent.kernel;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-<<<<<<< HEAD
-=======
 import java.net.Socket;
 import java.net.URI;
->>>>>>> 8cdaf1bd0087fcaaaebe9f1fdb07d92818162bce
 import java.util.logging.Level;
 import java.net.Socket;
 import java.net.URI;
