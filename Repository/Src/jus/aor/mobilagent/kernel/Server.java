@@ -48,7 +48,9 @@ public final class Server implements _Server {
 			loggerName = "jus/aor/mobilagent/"+InetAddress.getLocalHost().getHostName()+"/"+this.name;
 			logger=Logger.getLogger(loggerName);
 			/* démarrage du server d'agents mobiles attaché à cette machine */
-			//A COMPLETER
+			this.agentServer = new AgentServer(this.name, this.port);
+			this.logger.log(Level.INFO, String.format("Starting AgentServer %s", this));
+			agentServer.start();
 			/* temporisation de mise en place du server d'agents */
 			Thread.sleep(1000);
 		}catch(Exception ex){

@@ -37,7 +37,6 @@ public class Starter{
 	protected jus.aor.mobilagent.kernel._Server server;
 	/** le Loader utilisé */
 	protected BAMServerClassLoader loader;
-
 	/** la classe du server : jus.aor.mobilagent.kernel.Server */
 	protected Class<jus.aor.mobilagent.kernel.Server> classe;
 	/**
@@ -180,7 +179,7 @@ public class Starter{
 	 * @param args
 	 */
 	public static void main(String... args) {
-		if(System.getSecurityManager() == null)System.setSecurityManager(new RMISecurityManager());
+		//if(System.getSecurityManager() == null)System.setSecurityManager(new RMISecurityManager());
 		new Starter(args);
 	}
 	

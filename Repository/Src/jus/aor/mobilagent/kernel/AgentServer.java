@@ -16,7 +16,7 @@ Elle contient la boucle (méthode run) de réception des agents mobiles.
 * La classe Server est une classe qui protège la précédente, permet de gérer
 l’AgentServer et fournit les primitives d’ajout d’un service et de déploiement d’un
 agent.*/
-public class AgentServer implements Runnable {
+public class AgentServer extends Thread implements Runnable  {
     //Port on which the AgentServer is running
 	private int Port;
 	//name of the server
@@ -100,13 +100,13 @@ public class AgentServer implements Runnable {
 		boolean alive = true;
 		try {
 			// create a socket Server
-			ServerSocket SocketServer = new ServerSocket(this.Port);
+			ServerSocket socketServer = new ServerSocket(this.Port);
 
 			Starter.getLogger().log(Level.INFO, String.format("AgentServer %s started", this));
 			while (alive) {
 				Starter.getLogger().log(Level.FINE, String.format("AgentServer %s: about to accept", this));
 				// Accept the incoming Agents
-				Socket SocketClient = SocketServer.accept();
+				Socket SocketClient = socketServer.accept();
 				//logger keeps a trace of the bahaviour of the app 
 				//so we use it to make the connection
 				Starter.getLogger().log(Level.FINE, String.format("AgentServer %s accepted an agent", this));
@@ -121,7 +121,7 @@ public class AgentServer implements Runnable {
 
 				SocketClient.close();
 			}
-			SocketServer.close();
+			socketServer.close();
 		} catch (IOException aException) {
 			Starter.getLogger().log(Level.INFO, String.format("An IO exception occured in %s", this), aException);
 		} catch (ClassNotFoundException aException) {
