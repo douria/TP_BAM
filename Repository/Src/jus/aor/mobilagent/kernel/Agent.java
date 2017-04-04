@@ -1,11 +1,23 @@
 package jus.aor.mobilagent.kernel;
 
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.util.logging.Level;
+import java.net.Socket;
+import java.net.URI;
+
 
 public class Agent implements _Agent {
-  protected Route way;
-  private String pServerName;
-  private AgentServer pAgentServer;
+  /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	protected Route way;
+	private String pServerName;
+	private AgentServer pAgentServer;
+
 	@Override
 	/* 
 	 * run la methode java
@@ -17,11 +29,11 @@ public class Agent implements _Agent {
 		// If there is something to do
 		if (this.way.hasNext()) {
 			//we get the next way for this agent
-			Etape wNextStep = this.way.next();
-			Starter.getLogger().log(Level.FINE, String.format("Agent %s running step %s", this, wNextStep));
+			Etape NextStep = this.way.next();
+			Starter.getLogger().log(Level.FINE, String.format("Agent %s running step %s", this, NextStep));
 			//execute the action 
-			wNextStep.action.execute();
-			//we moove on to the next one if there is one otherwise we go back to
+			NextStep.action.execute();
+			//we move on to the next one if there is one otherwise we go back to
 			//the first step which is also supposed to be the last one
 			if (this.way.hasNext()) {
 				// Send Agent to next AgentServer
@@ -42,13 +54,39 @@ public class Agent implements _Agent {
 	 * he has finished the execution of all the tasks of one way 
 	 * 
 	 */
-
-   private void move() {
+	
+	private void move() {
 		//ask the teacher !!!!!
+		this.move(this.way.get().server);
+	}
+
+	protected void move(URI destination) {
+		Starter.getLogger().log(Level.FINE,
+				String.format("Agent %s moving to %s:%d ", this, destination.getHost(), destination.getPort()));
+
+		try {
+			Socket DestSocket = new Socket(destination.getHost(), destination.getPort());
+
+			OutputStream OutputStream = DestSocket.getOutputStream();
+			ObjectOutputStream ObjectOutputStream = new ObjectOutputStream(OutputStream);
+			ObjectOutputStream ObjectOutputStream2 = new ObjectOutputStream(OutputStream);
+
+			BAMAgentClassLoader AgentClassLoader = (BAMAgentClassLoader) this.getClass().getClassLoader();
+			Jar BaseCode = AgentClassLoader.extractCode();
+
+			ObjectOutputStream.writeObject(BaseCode);
+
+			ObjectOutputStream2.writeObject(this);
+
+			ObjectOutputStream2.close();
+			ObjectOutputStream.close();
+			DestSocket.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 		
-
-   
 
 	/*  
     * On declare les variable qu'il faut : un agent doit avoir une route qui lui ai propre
