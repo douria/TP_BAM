@@ -65,7 +65,23 @@ public final class Server implements _Server {
 	 */
 	public final void addService(String name, String classeName, String codeBase, Object... args) {
 		try {
-			//A COMPLETER
+			//create a BAM loader
+			BAMServerClassLoader ClassLoader = new BAMServerClassLoader(new URL[] {},
+													this.getClass().getClassLoader());
+			//add the path to the jar
+			ClassLoader.addURL(new URL(codeBase));
+
+			// gets the class in which the method is defined 
+			Class<?> ClassService = Class.forName(classeName, true, ClassLoader);
+
+			// gets the constructor of this class 
+			Constructor<?> Constructor = ClassService.getConstructor(Object[].class);
+			// instantiate the new object
+			_Service<?> Service = (_Service<?>) Constructor.newInstance(new Object[] { args });
+
+			// adds the service to the list of services
+			this.agentServer.addService(name, Service);
+
 		}catch(Exception ex){
 			logger.log(Level.FINE," erreur durant le lancement du serveur"+this,ex);
 			return;
