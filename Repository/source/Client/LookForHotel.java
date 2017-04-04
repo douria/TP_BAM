@@ -52,7 +52,7 @@ public class LookForHotel{
 	            cha = (_Chaine) registry.lookup("chaine");
 				System.out.println("Read");
 			}
-			cha.get(localisation);
+			System.out.println(cha.get(localisation).size());
 		}catch(Throwable e){
 			e.printStackTrace();/*synchronized (Customer.class){
 				System.out.println("Provider error: " + e);

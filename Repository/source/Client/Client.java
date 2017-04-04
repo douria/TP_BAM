@@ -2,6 +2,6 @@ package Client;
 
 public class Client {
 	public static void main(String[] args) {
-		new LookForHotel(args);
+		System.out.println(new LookForHotel(args).call());
 	}
 }
