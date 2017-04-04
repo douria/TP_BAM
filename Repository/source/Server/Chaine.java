@@ -17,7 +17,12 @@ public class Chaine implements _Chaine {
 	
 	@Override
 	public List<Hotel> get(String localisation) {
-		return li;
+		List<Hotel> filtre = new ArrayList<Hotel>();
+		for(Hotel h : this.li)
+			if(localisation.equals(h.localisation))
+				filtre.add(h);
+
+		return filtre;
 	}
 
 }
