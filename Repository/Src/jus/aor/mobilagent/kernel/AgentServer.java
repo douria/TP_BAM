@@ -76,21 +76,21 @@ public class AgentServer extends Thread implements Runnable  {
 
 		// Creation of an InputStream, an ObjectInputStream and an
 		// AgentInputStream
-		InputStream InputStream = Socket.getInputStream();
-		ObjectInputStream ObjectInputStream = new ObjectInputStream(InputStream);
-		AgentInputStream AgentInputStream = new AgentInputStream(InputStream, ClassLoader);
+		InputStream is = Socket.getInputStream();
+		//ObjectInputStream ObjectInputStream = new ObjectInputStream(InputStream);
+		AgentInputStream ais = new AgentInputStream(is, ClassLoader);
 
 		// Retrieve the Jar and integrate it
-		Jar Jar = (Jar) ObjectInputStream.readObject();
+		Jar Jar = (Jar) ais.readObject();
 		ClassLoader.integrateCode(Jar);
-
+		System.out.println(ais.readObject().toString());
 		// Retrieve the _Agent using the AgentInputStream
-		_Agent Agent = (_Agent) AgentInputStream.readObject();
+		_Agent Agent = (_Agent) ais.readObject();
 
-		AgentInputStream.close();
-		ObjectInputStream.close();
-		InputStream.close();
-
+		ais.close();
+		//ObjectInputStream.close();
+		is.close();
+		
 		return Agent;
 	}
 	
