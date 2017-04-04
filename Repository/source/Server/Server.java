@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.rmi.AlreadyBoundException;
 import java.rmi.Naming;
 import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
@@ -24,7 +25,7 @@ import Common._Chaine;
 
 public class Server {
 
-	public static void main(String[] args) throws ParserConfigurationException, SAXException, IOException {
+	public static void main(String[] args) throws ParserConfigurationException, SAXException, IOException, AlreadyBoundException {
 		System.setProperty("java.security.policy","file:./rmipolicy.policy");
 		System.setProperty("java.rmi.server.codebase","file:./bin");
 		//System.setProperty("java.rmi.server.hostname","127.0.0.1");
@@ -33,7 +34,7 @@ public class Server {
 			System.exit(1);
 		}
 		int num = Integer.parseInt(args[0]);
-	    int port =  + num;
+	    int port = 1099 + num;
 	    // installation d'un securityManager
 	    LocateRegistry.createRegistry(port);
 
@@ -53,9 +54,9 @@ public class Server {
     		chaine.add(m.getNamedItem("name").getNodeValue(), m.getNamedItem("localisation").getNodeValue());
     	}
     	_Chaine skeleton = (_Chaine) UnicastRemoteObject.exportObject((_Chaine)chaine, port);
-		Naming.rebind("chaine", skeleton);
+		Naming.bind("rmi://localhost:"+port+"/chaine", skeleton);
 	    //System.out.println("Hotel in Paris loaded: "+chaine.get("Paris").size());
-	    while(true);
+	    //while(true);
 	}
 
 }
