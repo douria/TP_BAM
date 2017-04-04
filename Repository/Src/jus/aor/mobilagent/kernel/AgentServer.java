@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
-
 /*AgentServer décrit la partie opérationnelle du fonctionnement de ce serveur.
 Elle contient la boucle (méthode run) de réception des agents mobiles.
 * La classe Server est une classe qui protège la précédente, permet de gérer
