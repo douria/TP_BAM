@@ -3,13 +3,19 @@
  */
 package jus.aor.mobilagent.kernel;
 
+import java.io.ObjectOutputStream;
+import java.io.*;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.net.InetAddress;
+import java.net.Socket;
 import java.net.URI;
 import java.net.URL;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.omg.CORBA.portable.OutputStream;
 
 import jus.aor.mobilagent.kernel.BAMAgentClassLoader;
 import jus.aor.mobilagent.kernel._Agent;
@@ -67,15 +73,44 @@ public final class Server implements _Server {
 	}
 	/**
 	 * deploie l'agent caractérisé par les arguments sur le serveur
-	 * @param classeName classe du service
+	 * @param wclassName service's class
 	 * @param args arguments de construction de l'agent
 	 * @param codeBase codebase du service
 	 * @param etapeAddress la liste des adresse des étapes
 	 * @param etapeAction la liste des actions des étapes
 	 */
-	public final void deployAgent(String classeName, Object[] args, String codeBase, List<String> etapeAddress, List<String> etapeAction) {
+	public final void deployAgent(String wclassName, Object[] args, String codeBase, List<String> etapeAddress, List<String> etapeAction) {
+		_Agent Agent = null;
 		try {
-			//A COMPLETER en terme de startAgent
+			//we create a new BAM Agent Class Loader
+			//and create a new URI so that we can get the Path of the jar
+			BAMAgentClassLoader ClassLoader = new BAMAgentClassLoader(new URI(codeBase).getPath(),
+					this.getClass().getClassLoader());
+
+			// we get the class back
+			Class<?> ClassAgent = Class.forName(wclassName, true, ClassLoader);
+
+			// we get the constructor again
+			Constructor<?> Constructor = ClassAgent.getConstructor(Object[].class);
+			// Instantiate the object
+			Agent = (_Agent) Constructor.newInstance(new Object[] { args });
+			// sets up (initialises) The Agent
+			Agent.init(this.agentServer, this.name);
+			
+			int Size = etapeAction.size();
+			for (int i = 0; i < Size; i++) {
+				// adds the steps "etapes" in the agent's list 
+				Field Champ = ClassAgent.getDeclaredField(etapeAction.get(i));
+				// makes sure that the field is available
+				Champ.setAccessible(true);
+				// get the action
+				_Action Action = (_Action) Champ.get(Agent);
+				// add the steps
+				Agent.addEtape(new Etape(new URI(etapeAddress.get(i)), Action));
+				
+			// start running the agent
+			this.startAgent(Agent, ClassLoader);
+			}
 		}catch(Exception ex){
 			logger.log(Level.FINE," erreur durant le lancement du serveur"+this,ex);
 			return;
@@ -89,6 +124,27 @@ public final class Server implements _Server {
 	 * @throws Exception
 	 */
 	protected void startAgent(_Agent agent, BAMAgentClassLoader loader) throws Exception {
-		//A COMPLETER
+		URI AgentServerSite = this.agentServer.site();
+		//new connection!!!!!!!!!!! using sockets !!!!!
+		Socket Sock = new Socket(AgentServerSite.getHost(), AgentServerSite.getPort());
+
+		// Creation of a Stream and an ObjectOutputStream to destination
+		java.io.OutputStream OutputStream = Sock.getOutputStream();
+		ObjectOutputStream ObjectOutputStream = new ObjectOutputStream(OutputStream);
+		ObjectOutputStream ObjectOutputStream2 = new ObjectOutputStream(OutputStream);
+
+		// Retrieve byte code to send
+		Jar BaseCode = loader.extractCode();
+
+		// Send Jar's path to the 
+		ObjectOutputStream.writeObject(BaseCode);
+		// Send Agent (this)
+		ObjectOutputStream2.writeObject(agent);
+
+		// Close the sockets
+		//end the connection
+		ObjectOutputStream2.close();
+		ObjectOutputStream.close();
+		Sock.close();
 	}
 }

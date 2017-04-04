@@ -1,9 +1,13 @@
 package jus.aor.mobilagent.kernel;
 
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 
 
 /*AgentServer décrit la partie opérationnelle du fonctionnement de ce serveur.
@@ -62,6 +66,34 @@ public class AgentServer implements Runnable {
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
+		boolean alive = true;
+		try {
+			// create a socket Server
+			ServerSocket SocketServer = new ServerSocket(this.Port);
+
+			Starter.getLogger().log(Level.INFO, String.format("AgentServer %s started", this));
+			while (alive) {
+				Starter.getLogger().log(Level.FINE, String.format("AgentServer %s: about to accept", this));
+				// Accept on incoming Agents
+				Socket SocketClient = SocketServer.accept();
+				Starter.getLogger().log(Level.FINE, String.format("AgentServer %s accepted an agent", this));
+
+				// load the repository and the agent
+				_Agent wAgent = this.getAgent(SocketClient);
+				wAgent.reInit(this, this.Name);
+
+				Starter.getLogger().log(Level.INFO, String.format("AgentServer %s received agent %s", this, wAgent));
+
+				new Thread(wAgent).start();
+
+				SocketClient.close();
+			}
+			SocketServer.close();
+		} catch (IOException aException) {
+			Starter.getLogger().log(Level.INFO, String.format("An IO exception occured in %s", this), aException);
+		} catch (ClassNotFoundException aException) {
+			Starter.getLogger().log(Level.INFO, String.format("A class was not found in %s", this), aException);
+		}
 		
 	}
 
