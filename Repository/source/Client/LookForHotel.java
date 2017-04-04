@@ -17,6 +17,7 @@ import Common._Chaine;
 public class LookForHotel{
 	/** le critère de localisaton choisi */
 	private String localisation;
+	private int num;
 	// ...
 	/**
 	 * Définition de l'objet représentant l'interrogation.
@@ -24,11 +25,12 @@ public class LookForHotel{
 	 *          de localisation
 	 */
 	public LookForHotel(String... args){
-		if(args.length < 1) {
+		if(args.length < 2) {
 			System.out.println("LookForHotel <localisation de la recherche>");
 			System.exit(1);
 		}
 		localisation = args[0];
+		num = Integer.parseInt(args[1]);
 	}
 	/**
 	 * réalise une intérrogation
