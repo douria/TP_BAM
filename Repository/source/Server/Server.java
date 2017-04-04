@@ -33,20 +33,20 @@ public class Server {
 
     	System.out.println("Mise en place du Security Manager ...");
     	if (System.getSecurityManager() == null) {
-    		//System.setSecurityManager(new RMISecurityManager());
+    		System.setSecurityManager(new RMISecurityManager());
     	}
 
     	System.out.println("Serveur lancé");
 	    
     	Chaine chaine = new Chaine();
     	DocumentBuilder build = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-    	Document document = build.parse(new File("../DataStore/Hotels1.xml"));
+    	Document document = build.parse(new File("Repository/DataStore/Hotels1.xml"));
     	NodeList hotels = document.getElementsByTagName("hotel");
     	for(int i = 0; i<hotels.getLength(); i++) {
     		NamedNodeMap m = hotels.item(i).getAttributes();
     		chaine.add(m.getNamedItem("name").getNodeValue(), m.getNamedItem("localisation").getNodeValue());
     	}
-    	Chaine skeleton = (Chaine) UnicastRemoteObject.exportObject(chaine, 1099);
+    	_Chaine skeleton = (_Chaine) UnicastRemoteObject.exportObject((_Chaine)chaine, 1099);
 		Naming.rebind("chaine", skeleton);
 	    
 	    while(true);

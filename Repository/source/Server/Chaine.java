@@ -7,7 +7,7 @@ import java.util.List;
 import Common.Hotel;
 import Common._Chaine;
 
-public class Chaine implements _Chaine, Remote {
+public class Chaine implements _Chaine {
 
 	ArrayList<Hotel> li = new ArrayList<>();
 	
