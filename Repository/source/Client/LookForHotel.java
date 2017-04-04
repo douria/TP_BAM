@@ -46,20 +46,22 @@ public class LookForHotel{
     	if (System.getSecurityManager() == null) {
     		System.setSecurityManager(new RMISecurityManager());
     	}
-		// D�marrage de la communication
-    	try{
-    		_Chaine cha;
-			synchronized (LookForHotel.class){
-				Registry registry = LocateRegistry.getRegistry(1099);
-	            cha = (_Chaine) registry.lookup("chaine");
-				System.out.println("Read");
+    	for(int i = 1; i<=num; i++) {
+    		// D�marrage de la communication
+	    	try{
+	    		_Chaine cha;
+				synchronized (LookForHotel.class){
+					Registry registry = LocateRegistry.getRegistry(1099+i);
+		            cha = (_Chaine) registry.lookup("chaine");
+					System.out.println("Read");
+				}
+				System.out.println(cha.get(localisation).size());
+			}catch(Throwable e){
+				e.printStackTrace();/*synchronized (Customer.class){
+					System.out.println("Provider error: " + e);
+				}*/
 			}
-			System.out.println(cha.get(localisation).size());
-		}catch(Throwable e){
-			e.printStackTrace();/*synchronized (Customer.class){
-				System.out.println("Provider error: " + e);
-			}*/
-		}
+    	}
 		return System.currentTimeMillis() - start;
 	}
 

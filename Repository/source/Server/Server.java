@@ -27,12 +27,13 @@ public class Server {
 	public static void main(String[] args) throws ParserConfigurationException, SAXException, IOException {
 		System.setProperty("java.security.policy","file:./rmipolicy.policy");
 		System.setProperty("java.rmi.server.codebase","file:./bin");
+		//System.setProperty("java.rmi.server.hostname","127.0.0.1");
 		if(args.length < 1) {
-			System.out.println("LookForHotel <localisation de la recherche>");
+			System.out.println("LookForHotel <localisation de la recherche> <numero de l'hotel>");
 			System.exit(1);
 		}
-		int num = Integer.parseInt(args[1]);
-	    int port = 1099 + num;
+		int num = Integer.parseInt(args[0]);
+	    int port =  + num;
 	    // installation d'un securityManager
 	    LocateRegistry.createRegistry(port);
 
@@ -51,8 +52,8 @@ public class Server {
     		NamedNodeMap m = hotels.item(i).getAttributes();
     		chaine.add(m.getNamedItem("name").getNodeValue(), m.getNamedItem("localisation").getNodeValue());
     	}
-    	_Chaine skeleton = (_Chaine) UnicastRemoteObject.exportObject((_Chaine)chaine, 1099);
-		Naming.rebind("chaine"+num, skeleton);
+    	_Chaine skeleton = (_Chaine) UnicastRemoteObject.exportObject((_Chaine)chaine, port);
+		Naming.rebind("chaine", skeleton);
 	    //System.out.println("Hotel in Paris loaded: "+chaine.get("Paris").size());
 	    while(true);
 	}
