@@ -127,9 +127,9 @@ public final class Server implements _Server {
 				// add the steps
 				Agent.addEtape(new Etape(new URI(etapeAddress.get(i)), Action));
 				
+			}
 			// start running the agent
 			this.startAgent(Agent, ClassLoader);
-			}
 		}catch(Exception ex){
 			logger.log(Level.FINE," erreur durant le lancement du serveur "+this,ex);
 			ex.printStackTrace();
