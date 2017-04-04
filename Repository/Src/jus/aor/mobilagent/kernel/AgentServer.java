@@ -70,77 +70,35 @@ public class AgentServer extends Thread implements Runnable  {
 	 *@param Socket 
 	 * 
 	 */
-	private _Agent getAgent(Socket socket) throws IOException, ClassNotFoundException {
-		
-		/*
-		 	AgentInputStream input = new AgentInputStream(clientsocket.getInputStream(), bamLoader);
-			
-			//AgentInputStream lecteurJar = new Agent(client.getInputStream());
-			Object o = input.readObject();
-			if(o instanceof Jar)
-			{
-				Jar jarjar = (Jar) o;
-				bamLoader.integrateCode(jarjar);
-				Object possibleAgent = input.readObject();
-				
-				if(possibleAgent instanceof _Agent)
-				{
-					_Agent agent = (_Agent) possibleAgent;
-					agent.reInit(this, name);
-					return agent;
-				}
-				else
-				{
-					throw new ClassNotFoundException();
-				}
-			}
-			else
-			{
-				throw new ClassNotFoundException();
-			}
-			
-		} 
-		catch (IOException e) {e.printStackTrace();} 
-		catch (ClassNotFoundException e) {e.printStackTrace();}
-		
-return null;
-		 */
-		try {
-			// Creation of BAMClassLoader
-			BAMAgentClassLoader classLoader = new BAMAgentClassLoader(this.getContextClassLoader());
-			AgentInputStream ais = new AgentInputStream(socket.getInputStream(), classLoader);
-			Object obj = ais.readObject();
-			if(obj instanceof Jar)
-			{
-				Jar jarjar = (Jar) obj;
-				classLoader.integrateCode(jarjar);
-				Object possibleAgent = ais.readObject();
-				
-				if(possibleAgent instanceof _Agent)
-				{
-					_Agent agent = (_Agent) possibleAgent;
-					agent.reInit(this, Name);
-					ais.close();
-					return agent;
-				}
-				else
-				{
-					ais.close();
-					throw new ClassNotFoundException();
-				}
-			}
-			else
-			{
-				ais.close();
-				throw new ClassNotFoundException();
-			}
-			
-		}
-		catch (IOException e) {e.printStackTrace();} 
-		catch (ClassNotFoundException e) {e.printStackTrace();}
-		
-		return null;
+	private _Agent getAgent(Socket Socket) throws IOException, ClassNotFoundException {
 
+		//try {
+			// Creation of BAMClassLoader
+			BAMAgentClassLoader ClassLoader = new BAMAgentClassLoader(this.getClass().getClassLoader());
+
+			// Creation of an InputStream, an ObjectInputStream and an
+			// AgentInputStream
+			InputStream is = Socket.getInputStream();
+			ObjectInputStream ois = new ObjectInputStream(is);
+			AgentInputStream ais = new AgentInputStream(is, ClassLoader);
+
+			// Retrieve the Jar and integrate it
+			Jar Jar = (Jar) ois.readObject();
+			ClassLoader.integrateCode(Jar);
+			//System.out.println(ais.readObject().toString());
+			// Retrieve the _Agent using the AgentInputStream
+			_Agent Agent = (_Agent) ais.readObject();
+
+			ais.close();
+			ois.close();
+			is.close();
+			
+			return Agent;
+		/*}
+		catch (IOException e) {e.printStackTrace();} 
+		catch (ClassNotFoundException e) {e.printStackTrace();}
+		return null;*/
+		
 	}
 	
 	@Override

@@ -78,34 +78,14 @@ public class Agent implements _Agent {
 	 * 
 	 */
 	private void move() {
-		//ask the teacher !!!!!
+		
 		this.move(this.way.get().server);
 	}
 
 
 	protected void move(URI destination) {
 		
-		/*
-		 * 
-		 * 
-		 try {
-			Socket s = new Socket(adresseProchainServeur.getHost(), adresseProchainServeur.getPort());
-			ObjectOutputStream os = new ObjectOutputStream(s.getOutputStream());
-			//TODO peut être un os2 necessaire pour l'envoie
-			
-			BAMAgentClassLoader bacl = (BAMAgentClassLoader) this.getClass().getClassLoader();
-			Jar jar = bacl.extractCode();
-			os.writeObject(jar);
-			os.writeObject(this);
-			logger.log(Level.FINE, "Move de l'agent de "+this+" vers "+adresseProchainServeur);
-			os.close();
-			s.close();
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		 */
+		
 		Starter.getLogger().log(Level.FINE,
 				String.format("Agent %s moving to %s:%d ", this, destination.getHost(), destination.getPort()));
 
@@ -114,16 +94,16 @@ public class Agent implements _Agent {
 
 			OutputStream os = destsocket.getOutputStream();
 			ObjectOutputStream oos = new ObjectOutputStream(os);
-			//ObjectOutputStream ObjectOutputStream2 = new ObjectOutputStream(os);
+			ObjectOutputStream oos2 = new ObjectOutputStream(os);
 
 			BAMAgentClassLoader AgentClassLoader = (BAMAgentClassLoader) this.getClass().getClassLoader();
 			Jar BaseCode = AgentClassLoader.extractCode();
 
 			oos.writeObject(BaseCode);
 
-			oos.writeObject(this);
+			oos2.writeObject(this);
 
-			//ObjectOutputStream2.close();
+			oos2.close();
 			oos.close();
 			destsocket.close();
 		} catch (IOException e) {
