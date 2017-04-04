@@ -48,7 +48,7 @@ public class Server {
     	}
     	_Chaine skeleton = (_Chaine) UnicastRemoteObject.exportObject((_Chaine)chaine, 1099);
 		Naming.rebind("chaine", skeleton);
-	    
+	    System.out.println("Hotel in Paris loaded: "+chaine.get("Paris").size());
 	    while(true);
 	}
 
