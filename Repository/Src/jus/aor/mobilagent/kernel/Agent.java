@@ -3,6 +3,11 @@ package jus.aor.mobilagent.kernel;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+<<<<<<< HEAD
+=======
+import java.net.Socket;
+import java.net.URI;
+>>>>>>> 8cdaf1bd0087fcaaaebe9f1fdb07d92818162bce
 import java.util.logging.Level;
 import java.net.Socket;
 import java.net.URI;
@@ -54,10 +59,45 @@ public class Agent implements _Agent {
 	 * he has finished the execution of all the tasks of one way 
 	 * 
 	 */
+<<<<<<< HEAD
 	
 	private void move() {
 		//ask the teacher !!!!!
 		this.move(this.way.get().server);
+=======
+
+   private void move(URI destination) {
+	  
+	Starter.getLogger().log(Level.FINE,
+			    // we get the port and the local address of the next server 
+				String.format("Agent %s moving to %s:%d ", this, destination.getHost(), destination.getPort()));
+
+		try {
+			// Create the socket of the destination
+			Socket DestSocket = new Socket(destination.getHost(), destination.getPort());
+
+			// Creation of a Stream and a ObjectOutputStream to destination
+			OutputStream OutputStream = DestSocket.getOutputStream();
+			ObjectOutputStream ObjectOutputStream = new ObjectOutputStream(OutputStream);
+			ObjectOutputStream ObjectOutputStream2 = new ObjectOutputStream(OutputStream);
+
+			// Retrieve byte code to send
+			BAMAgentClassLoader wAgentClassLoader = (BAMAgentClassLoader) this.getClass().getClassLoader();
+			Jar wBaseCode = wAgentClassLoader.extractCode();
+
+			// Send Jar in BAMAgentClassLoader
+			ObjectOutputStream.writeObject(wBaseCode);
+			// Send Agent (this)
+			ObjectOutputStream2.writeObject(this);
+
+			// Close the socket
+			ObjectOutputStream2.close();
+			ObjectOutputStream.close();
+			DestSocket.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+>>>>>>> 8cdaf1bd0087fcaaaebe9f1fdb07d92818162bce
 	}
 
 	protected void move(URI destination) {
