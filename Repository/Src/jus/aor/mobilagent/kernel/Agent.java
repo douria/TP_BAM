@@ -17,8 +17,8 @@ public class Agent implements _Agent {
 	private static final long serialVersionUID = 1L;
 	
 	protected Route way;
-	private String pServerName;
-	private AgentServer pAgentServer;
+	private transient String pServerName;
+	private transient AgentServer pAgentServer;
 
 	@Override
 	/* 
