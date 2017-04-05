@@ -179,7 +179,8 @@ public class Starter{
 	 * @param args
 	 */
 	public static void main(String... args) {
-		//if(System.getSecurityManager() == null)System.setSecurityManager(new RMISecurityManager());
+		System.setProperty("java.security.policy","file:./rmipolicy.policy");
+		if(System.getSecurityManager() == null)System.setSecurityManager(new RMISecurityManager());
 		new Starter(args);
 	}
 	

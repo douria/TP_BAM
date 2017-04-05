@@ -18,7 +18,7 @@ public class Agent implements _Agent {
 	
 	protected Route way;
 	private transient String pServerName;
-	private transient AgentServer pAgentServer;
+	protected transient AgentServer pAgentServer;
 
 	@Override
 	/* 
@@ -43,6 +43,7 @@ public class Agent implements _Agent {
 			} else {
 				// There is nothing left to do, Agent has finished
 				Starter.getLogger().log(Level.FINE, String.format("Agent %s has finished its route", this));
+				retour().execute();
 			}
 		} else {
 			// If this is reached, it means that the Agent had nothing to do. So
@@ -123,7 +124,6 @@ public class Agent implements _Agent {
 	@Override
 	public void addEtape(Etape etape) {
 		this.way.add(etape);
-		// TODO Auto-generated method stub
 		
 	}
 

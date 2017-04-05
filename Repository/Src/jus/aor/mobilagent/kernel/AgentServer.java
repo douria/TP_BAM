@@ -55,7 +55,7 @@ public class AgentServer extends Thread implements Runnable  {
      * get a service to this agentserver
      * 
      */
-	protected _Service<?> getService(String service_name) {
+	public _Service<?> getService(String service_name) {
 		return this.Services.get(service_name);
 	}
 	

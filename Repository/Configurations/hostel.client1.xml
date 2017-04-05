@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <!DOCTYPE HTML PUBLIC  "-//W3C//DTD HTML 4.0 Transitional//EN" "Server.dtd"> 
 <server>
-	<port value="111"/>
-	<service name="Duration" codebase="file:///.../Duration.jar" class="jus.aor.mobilagent.hostel.Duration" args=""/>
+	<port value="1111"/>
+	<!--<service name="Duration" codebase="file:///.../Duration.jar" class="jus.aor.mobilagent.hostel.Duration" args=""/>-->
 	
 <!--
 	<service name="Telephones" codebase="file:///.../AnnuaireHotel.jar" class="jus.aor.mobilagent.hostel.Annuaire" args=".../DataStore/Annuaire.xml"/>
 -->
-	<agent class="jus.aor.mobilagent.hostel.LookForHotel" codebase=".../Hostel.jar" args="Paris">
-		<etape server="mobilagent://...:222/" action="findHotel" />
-		<etape server="mobilagent://...:333/" action="findHotel" />
-		<etape server="mobilagent://...:444/" action="findTelephone" />
-	</agent>
-<!--
-	<agent class="jus.aor.mobilagent.hello.Hello" codebase=".../Hello.jar" args="">
-		<etape server="mobilagent://...:222/" action="doIt" />
-		<etape server="mobilagent://...:333/" action="doIt" />
+<!--	<agent class="jus.aor.mobilagent.hostel.LookForHotel" codebase=".../Hostel.jar" args="Paris">
+		<etape server="mobilagent://...:2222/" action="findHotel" />
+		<etape server="mobilagent://...:3333/" action="findHotel" />
+		<etape server="mobilagent://...:4444/" action="findTelephone" />
 	</agent>
 -->
+
+	<agent class="jus.aor.mobilagent.hostel.HotelAgent" codebase="bin/HotelAgent.jar" args="Paris">
+		<etape server="mobilagent://localhost:2222/" action="doIt" />
+		<etape server="mobilagent://localhost:3333/" action="doIt" />
+	</agent>
+
 </server>
 
