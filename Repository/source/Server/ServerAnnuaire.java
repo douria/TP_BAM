@@ -21,9 +21,11 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import Common._Annuaire;
 import Common._Chaine;
+import jus.aor.mobilagent.hostel.Annuaire;
 
-public class Server {
+public class ServerAnnuaire {
 
 	public static void main(String[] args) throws ParserConfigurationException, SAXException, IOException, AlreadyBoundException {
 		System.setProperty("java.security.policy","file:./rmipolicy.policy");
@@ -33,7 +35,7 @@ public class Server {
 			System.out.println("LookForHotel <localisation de la recherche> <numero de l'hotel>");
 			System.exit(1);
 		}
-		int num = Integer.parseInt(args[0]);
+		int num = Integer.parseInt(args[1]);
 	    int port = 1099 + num;
 	    // installation d'un securityManager
 	    LocateRegistry.createRegistry(port);
@@ -45,17 +47,10 @@ public class Server {
 
     	System.out.println("Serveur lancé");
 	    
-    	Chaine chaine = new Chaine();
-    	DocumentBuilder build = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-    	Document document = build.parse(new File("Repository/DataStore/Hotels"+num+".xml"));
-    	NodeList hotels = document.getElementsByTagName("Hotel");
-    	for(int i = 0; i<hotels.getLength(); i++) {
-    		NamedNodeMap m = hotels.item(i).getAttributes();
-    		chaine.add(m.getNamedItem("name").getNodeValue(), m.getNamedItem("localisation").getNodeValue());
-    	}
-    	_Chaine skeleton = (_Chaine) UnicastRemoteObject.exportObject((_Chaine)chaine, port);
-		Naming.bind("rmi://localhost:"+port+"/chaine", skeleton);
-	    System.out.println("Hotel in Paris loaded: "+chaine.get("Paris").size());
+    	Annuaire annu = new Annuaire(args);
+    	_Annuaire skeleton = (_Annuaire) UnicastRemoteObject.exportObject((_Annuaire)annu, port);
+		Naming.bind("rmi://localhost:"+port+"/annuaire", skeleton);
+	    //System.out.println("Hotel in Paris loaded: "+chaine.get("Paris").size());
 	    //while(true);
 	}
 

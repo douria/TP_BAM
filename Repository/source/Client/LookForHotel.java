@@ -2,8 +2,12 @@ package Client;
 import java.rmi.RMISecurityManager;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.ArrayList;
 import java.util.Random;
 
+import Common.Hotel;
+import Common.Numero;
+import Common._Annuaire;
 import Common._Chaine;
 
 /**
@@ -46,6 +50,7 @@ public class LookForHotel{
     	if (System.getSecurityManager() == null) {
     		System.setSecurityManager(new RMISecurityManager());
     	}
+    	ArrayList<Hotel> hotels = new ArrayList<>();
     	for(int i = 1; i<=num; i++) {
     		// D�marrage de la communication
 	    	try{
@@ -56,12 +61,30 @@ public class LookForHotel{
 					System.out.println("Read");
 				}
 				System.out.println(cha.get(localisation).size());
+				hotels.addAll(cha.get(localisation));
 			}catch(Throwable e){
 				e.printStackTrace();/*synchronized (Customer.class){
 					System.out.println("Provider error: " + e);
 				}*/
 			}
     	}
+    	try{
+    		_Annuaire cha;
+    		ArrayList<Numero> nums = new ArrayList<>();
+			synchronized (LookForHotel.class){
+				Registry registry = LocateRegistry.getRegistry(1099+7);
+	            cha = (_Annuaire) registry.lookup("annuaire");
+				System.out.println("Read");
+			}
+			for(Hotel i : hotels) {
+				nums.add(cha.get(i.name));
+			}
+			System.out.println("Numero seen " + nums.size());
+		}catch(Throwable e){
+			e.printStackTrace();/*synchronized (Customer.class){
+				System.out.println("Provider error: " + e);
+			}*/
+		}
 		return System.currentTimeMillis() - start;
 	}
 
