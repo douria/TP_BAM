@@ -16,19 +16,21 @@ Elle contient la boucle (méthode run) de réception des agents mobiles.
 * La classe Server est une classe qui protège la précédente, permet de gérer
 l’AgentServer et fournit les primitives d’ajout d’un service et de déploiement d’un
 agent.*/
-public class AgentServer extends Thread implements Runnable  {
+public class AgentServer extends Thread {
+	private boolean isalive;
     //Port on which the AgentServer is running
-	private int Port;
+	private int port;
 	//name of the server
-	private String Name;
+	private String name;
 	// List of services in the AgentService 
-	private Map<String, _Service<?>> Services;
+	private Map<String, _Service<?>> services;
+	
 
 	
 	protected AgentServer(String name , int port ){
-		this.Port=port;
-		this.Name=name;
-		this.Services = new HashMap<String, _Service<?>>();
+		this.port=port;
+		this.name=name;
+		this.services = new HashMap<String, _Service<?>>();
 	}
 	/**
 	 * Retourne l'adresse de l'AgentServer
@@ -36,19 +38,20 @@ public class AgentServer extends Thread implements Runnable  {
 	 * @return URI de l'AgentServer
 	 */
 	public URI site() {
+		URI uri = null;
 		try {
-			return new URI("//localhost:" + this.Port);
+			uri = new URI("//localhost:" + this.port);
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
-		return null;
+		return uri;
 	}
     /**
      * add a service to this agentserver
      * 
      */
 	protected void addService(String service_name, _Service<?> service) {
-		this.Services.put(service_name, service);
+		this.services.put(service_name, service);
 	}
 	
 	/**
@@ -56,12 +59,13 @@ public class AgentServer extends Thread implements Runnable  {
      * 
      */
 	protected _Service<?> getService(String service_name) {
-		return this.Services.get(service_name);
+		return this.services.get(service_name);
 	}
 	
 	@Override
 	public String toString() {
-		return String.format("[AgentServer: name=%s, port=%d]", this.Name, this.Port);
+		String s = "[AgentServer: name= " +this.name+ " , port= "+this.port;
+		return s;
 	}
 
 	/**
@@ -74,17 +78,17 @@ public class AgentServer extends Thread implements Runnable  {
 
 		//try {
 			// Creation of BAMClassLoader
-			BAMAgentClassLoader ClassLoader = new BAMAgentClassLoader(this.getClass().getClassLoader());
+			BAMAgentClassLoader classLoader = new BAMAgentClassLoader(this.getClass().getClassLoader());
 
 			// Creation of an InputStream, an ObjectInputStream and an
 			// AgentInputStream
 			InputStream is = Socket.getInputStream();
 			ObjectInputStream ois = new ObjectInputStream(is);
-			AgentInputStream ais = new AgentInputStream(is, ClassLoader);
+			AgentInputStream ais = new AgentInputStream(is, classLoader);
 
 			// Retrieve the Jar and integrate it
 			Jar Jar = (Jar) ois.readObject();
-			ClassLoader.integrateCode(Jar);
+			classLoader.integrateCode(Jar);
 			//System.out.println(ais.readObject().toString());
 			// Retrieve the _Agent using the AgentInputStream
 			_Agent Agent = (_Agent) ais.readObject();
@@ -104,29 +108,28 @@ public class AgentServer extends Thread implements Runnable  {
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-		boolean alive = true;
+		isalive = true;
 		try {
 			// create a socket Server
-			ServerSocket socketServer = new ServerSocket(this.Port);
-
+			ServerSocket socketServer = new ServerSocket(this.port);
 			Starter.getLogger().log(Level.INFO, String.format("AgentServer %s started", this));
-			while (alive) {
-				Starter.getLogger().log(Level.FINE, String.format("AgentServer %s: about to accept", this));
+			while (isalive) {
+				//Starter.getLogger().log(Level.FINE, String.format("AgentServer %s: about to accept", this));
 				// Accept the incoming Agents
-				Socket SocketClient = socketServer.accept();
+				Socket socketClient = socketServer.accept();
 				//logger keeps a trace of the bahaviour of the app 
 				//so we use it to make the connection
 				Starter.getLogger().log(Level.FINE, String.format("AgentServer %s accepted an agent", this));
 
 				// load the repository and the agent
-				_Agent Agent = this.getAgent(SocketClient);
+				_Agent agent = this.getAgent(socketClient);
 				//Initialise l'agent lors de son déploiement sur un des serveurs du bus
-				Agent.reInit(this, this.Name);
-				Starter.getLogger().log(Level.INFO, String.format("AgentServer %s received agent %s", this, Agent));
+				//agent.reInit(this, this.name);
+				Starter.getLogger().log(Level.INFO, String.format("AgentServer %s received agent %s", this, agent));
 				//we run the Agent
-				new Thread(Agent).start();
+				new Thread(agent).start();
 
-				SocketClient.close();
+				socketClient.close();
 			}
 			socketServer.close();
 		} catch (IOException aException) {

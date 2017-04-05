@@ -42,10 +42,10 @@ public class LookForHotel{
 		System.setProperty("java.security.policy","file:./rmipolicy.policy");
 		System.setProperty("java.rmi.server.codebase","file:./bin");
 		// installation d'un securityManager 
-		System.out.println("Mise en place du Security Manager ...");
-    	if (System.getSecurityManager() == null) {
+		//System.out.println("Mise en place du Security Manager ...");
+    	/*if (System.getSecurityManager() == null) {
     		System.setSecurityManager(new RMISecurityManager());
-    	}
+    	}*/
     	for(int i = 1; i<=num; i++) {
     		// D�marrage de la communication
 	    	try{
