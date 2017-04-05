@@ -30,6 +30,7 @@ public class HotelAgent extends Agent{
 	private String _localisation;
 	protected ArrayList<Hotel> _hotels = new ArrayList<>();
 	protected ArrayList<Numero> _nums = new ArrayList<>();
+	protected long time;
 
 	 /**
 	  * construction d'un agent de type hello.
@@ -37,6 +38,7 @@ public class HotelAgent extends Agent{
 	  */
 	 public HotelAgent(Object... args) {
 		 _localisation = (String) args[0];
+		 time = System.currentTimeMillis();
 	 }
 	 /**
 	 * l'action à entreprendre sur les serveurs visités  
@@ -95,6 +97,7 @@ public class HotelAgent extends Agent{
 				Starter.getLogger().log(Level.INFO, "Executing Retour action!");
 				Starter.getLogger().log(Level.INFO, "Hotel seen "+_hotels.size());
 				Starter.getLogger().log(Level.INFO, "Numero seen "+_nums.size());
+				Starter.getLogger().log(Level.INFO,  "Temps total :"+(System.currentTimeMillis()-time));
 			}
 
 			@Override
