@@ -17,6 +17,7 @@
 	<agent class="jus.aor.mobilagent.hostel.HotelAgent" codebase="bin/HotelAgent.jar" args="Paris">
 		<etape server="mobilagent://localhost:2222/" action="doIt" />
 		<etape server="mobilagent://localhost:3333/" action="doIt" />
+		<etape server="mobilagent://localhost:4444/" action="findTelephone" />
 	</agent>
 
 </server>

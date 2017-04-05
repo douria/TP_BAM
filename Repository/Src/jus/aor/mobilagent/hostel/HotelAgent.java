@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import Common.Hotel;
+import Common.Numero;
 import jus.aor.mobilagent.kernel._Action;
 import jus.aor.mobilagent.kernel.Agent;
 import jus.aor.mobilagent.kernel.Starter;
@@ -22,8 +23,13 @@ import jus.aor.mobilagent.kernel.Starter;
  */
 public class HotelAgent extends Agent{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2725697946274938967L;
 	private String _localisation;
 	protected ArrayList<Hotel> _hotels = new ArrayList<>();
+	protected ArrayList<Numero> _nums = new ArrayList<>();
 
 	 /**
 	  * construction d'un agent de type hello.
@@ -51,6 +57,29 @@ public class HotelAgent extends Agent{
 			return new String("LookingForHotel");
 		}
 	};
+	 /**
+	 * l'action à entreprendre sur les serveurs visités  
+	 */
+	protected _Action findTelephone = new _Action(){
+
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 15231819542050637L;
+
+		@Override
+		public void execute() {
+			Starter.getLogger().log(Level.INFO, "Executing collection action");
+			_nums = (ArrayList<Numero>) pAgentServer.getService("Telephones").call(_hotels);
+			//System.out.println(_hotels.size());
+		}
+
+		@Override
+		public String toString() {
+			return new String("LookingForHotel");
+		}
+	};
 	/* (non-Javadoc)
 	 * @see jus.aor.mobilagent.kernel.Agent#retour()
 	 * 
@@ -65,6 +94,7 @@ public class HotelAgent extends Agent{
 			public void execute() {
 				Starter.getLogger().log(Level.INFO, "Executing Retour action!");
 				Starter.getLogger().log(Level.INFO, "Hotel seen "+_hotels.size());
+				Starter.getLogger().log(Level.INFO, "Numero seen "+_nums.size());
 			}
 
 			@Override
